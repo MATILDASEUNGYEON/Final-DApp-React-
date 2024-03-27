@@ -1,0 +1,78 @@
+@font-face {
+  font-family: "fonts/Cafe24Supermagic-Regular-v1.0";
+  src: url("./fonts/Cafe24Supermagic-Regular-v1.0.ttf");
+}
+div {
+  margin: 0;
+  font-family: "fonts/Cafe24Supermagic-Regular-v1.0";
+}
+
+li {
+  list-style: none;
+}
+
+.todo > * {
+  flex: 0 0 100%;
+}
+
+.stack-small {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 10px;
+}
+
+.btn-group {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.btn__lg {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.list-group {
+  margin-top: 20px;
+}
+
+.mainDiv {
+  margin: 0 auto;
+  max-width: 600px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.InsertForm {
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  text-align: center; /* 제목 가운데 정렬 */
+  padding-bottom: 10px;
+}
+
+div {
+  padding-bottom: 10px;
+}
+
+.insert {
+  padding-top: 20px;
+}
+
+.myaccount {
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.StatusButton {
+  display: flex;
+  justify-content: center;
+}
