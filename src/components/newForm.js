@@ -13,7 +13,6 @@ function TaskForm({ getList }) {
     status: "",
   });
 
-  // const [message, setMessage] = useState("");
   const [buttonName, setButtonName] = useState("add");
 
   const handleChange = (event) => {
@@ -29,13 +28,11 @@ function TaskForm({ getList }) {
   }, [task]);
 
   const statusChange = (newValue) => {
-    // setSelectedStatus(newValue);
-
     console.log(newValue);
     setTask((prevTask) => ({
       ...prevTask,
       status: newValue,
-    })); // 새로운 값을 상태에 설정
+    }));
   };
 
   const handleSubmit = async (event) => {

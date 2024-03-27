@@ -1,19 +1,17 @@
-// web3 적용 //
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Todo from "./components/Todo";
-import TaskForm from "./components/newForm"; //입력창
 import { Button, Collapse, ListGroup } from "react-bootstrap";
 import Web3 from "web3";
 import ContractABI from "./EditTodo.json";
+import Todo from "./components/Todo";
+import TaskForm from "./components/newForm";
 
 function App(props) {
-  const [tasks, setTasks] = useState(props.tasks || []); //수정
-  // const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState(props.tasks || []);
   const [account, setAccount] = useState();
   const [balance, setBalance] = useState("");
-  const [sortTasks, setSortTasks] = useState([]); //수정
+  const [sortTasks, setSortTasks] = useState([]);
   const [contract, setContract] = useState();
   const [showFullBalance, setShowFullBalance] = useState(false);
 
@@ -37,6 +35,7 @@ function App(props) {
     }
   };
 
+  //TodoList 가져오기
   async function getList() {
     try {
       // Ethereum 네트워크에 연결
@@ -46,9 +45,8 @@ function App(props) {
       const sender = accounts[0];
       const balances = await web3.eth.getBalance(sender);
       setBalance(web3.utils.fromWei(balances, "ether"));
-      // console.log("balances: ", web3.utils.fromWei(balances, "ether"));
 
-      //스마트 컨트랙트 메서드 호출
+      //스마트 컨트랙트 메서드 호출 [getTodo]
       const result = await contract.methods
         .getTodo(sender)
         .call({ from: sender })
@@ -59,7 +57,6 @@ function App(props) {
           console.log("todoList : ", todoList.length);
           console.log("id List : ", idList.length);
         });
-      // 결과에서 할 일 목록과 ID 배열을 추출
 
       // 할 일 목록을 적절한 형식으로 변환하여 상태에 설정
       const formattedTasks = todoList.map((todo, index) => ({
@@ -71,12 +68,11 @@ function App(props) {
         status: todo.status,
       }));
       setTasks(formattedTasks);
-      // console.log("formattedTasks:", formattedTasks[0]);
+
       // 성공 메시지 설정
       console.log("Transaction successful");
     } catch (error) {
       // 에러 발생 시 메시지 설정
-
       console.log(`Transaction failed: ${error.message}`);
     }
   }
@@ -86,6 +82,7 @@ function App(props) {
     getList();
   }, [account]);
 
+  //MetaMask 연동 관련 코드
   useEffect(() => {
     async function loadAccount() {
       if (typeof window.ethereum !== "undefined") {
@@ -120,6 +117,7 @@ function App(props) {
     loadAccount();
   }, []);
 
+  //contract확인 테스트코드
   useEffect(() => {
     console.log("contract:", contract);
     if (contract !== undefined) {
@@ -129,30 +127,22 @@ function App(props) {
       getList();
     }
   }, [contract]);
-
+  //TodoList 입력폼 Action
   const [openForm, setOpenForm] = useState(false);
   const toggleForm = () => {
     setOpenForm(!openForm);
   };
-
+  //시작일,종료일 형태 변환
   function changeDate(unixdate) {
     const milliseconds = Number(unixdate) * 1000;
     const date = new Date(milliseconds);
     return date.toLocaleDateString();
   }
-
+  //TodoList 최신순으로 나열
   useEffect(() => {
-    // tasks.map((task) =>
-    //   console.log("tasks : ", task.status === 0n ? "등록" : "ㄴㄴ")
-    // );
     const filteredTasks = tasks.filter((task) => task.title.trim() !== "");
-
     // 필터링된 배열을 역순으로 정렬하여 상태로 설정
     setSortTasks(filteredTasks.slice().reverse());
-
-    // console.log(typeof tasks);
-    // console.log("tasks : ", tasks.length);
-    // console.log("tasks : ");
   }, [tasks]);
 
   const taskList = sortTasks.map((task) => (
@@ -202,7 +192,7 @@ function App(props) {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          Eth. {showFullBalance ? balance : balance.substring(0, 7) + "..."}
+          Eth. {showFullBalance ? balance : balance.substring(0, 6) + "..."}
         </div>
         <Button variant="success" onClick={toggleForm} className="btn__lg">
           TodoList 작성하기

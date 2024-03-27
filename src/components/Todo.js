@@ -17,17 +17,18 @@ function Todo(props) {
   const [newStartDate, setNewStartDate] = useState(changeDate(props.startDate));
   const [newEndDate, setNewEndDate] = useState(changeDate(props.endDate));
   const [newStatus, setNewStatus] = useState(parseInt(props.status) + 3);
-  // const [tasks, setTasks] = useState(props.tasks);
-  const [sender, setSender] = useState(null); // 발신자 주소 상태 추가
+  const [sender, setSender] = useState(null);
   const [buttonName, setButtonName] = useState("편집");
   const [deletebutton, setDeleteButton] = useState("삭제");
   const getList = props.getList;
 
+  //컨트렉트 연결
   const web3 = new Web3(window.ethereum);
   const contractABI = ContractABI.abi;
   const contractAddress = "0x434DfE0c80389520826608cF92830703934DD721";
   const contract = new web3.eth.Contract(contractABI, contractAddress);
 
+  //사용자 계정
   useEffect(() => {
     const getSender = async () => {
       try {
@@ -71,11 +72,7 @@ function Todo(props) {
   }
   function handleStatusChange(newValue) {
     setNewStatus(newValue);
-    console.log("newV", newValue);
   }
-  // useEffect(() => {
-  //   console.log("New status:", newStatus);
-  // }, [newStatus]);
 
   async function handleSubmit(e) {
     e.preventDefault();
