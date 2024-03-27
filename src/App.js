@@ -12,9 +12,30 @@ function App(props) {
   const [tasks, setTasks] = useState(props.tasks || []); //수정
   // const [tasks, setTasks] = useState([]);
   const [account, setAccount] = useState();
+  const [balance, setBalance] = useState("");
   const [sortTasks, setSortTasks] = useState([]); //수정
-  const [message, setMessage] = useState("");
   const [contract, setContract] = useState();
+  const [showFullBalance, setShowFullBalance] = useState(false);
+
+  const handleMouseEnter = () => {
+    setShowFullBalance(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowFullBalance(false);
+  };
+
+  const fetchBalance = async () => {
+    try {
+      const web3 = new Web3(window.ethereum);
+      const account = await web3.eth.getAccounts();
+      const balanceWei = await web3.eth.getBalance(account[0]); // 이더 잔액 가져오기 (Wei 단위)
+      const balanceEther = web3.utils.fromWei(balanceWei, "ether"); // 이더로 변환
+      setBalance(balanceEther); // 상태 업데이트
+    } catch (error) {
+      console.error("Error fetching balance:", error);
+    }
+  };
 
   async function getList() {
     try {
@@ -23,6 +44,9 @@ function App(props) {
       const web3 = new Web3(window.ethereum);
       const accounts = await web3.eth.getAccounts();
       const sender = accounts[0];
+      const balances = await web3.eth.getBalance(sender);
+      setBalance(web3.utils.fromWei(balances, "ether"));
+      // console.log("balances: ", web3.utils.fromWei(balances, "ether"));
 
       //스마트 컨트랙트 메서드 호출
       const result = await contract.methods
@@ -49,10 +73,11 @@ function App(props) {
       setTasks(formattedTasks);
       // console.log("formattedTasks:", formattedTasks[0]);
       // 성공 메시지 설정
-      setMessage("Transaction successful");
+      console.log("Transaction successful");
     } catch (error) {
       // 에러 발생 시 메시지 설정
-      setMessage(`Transaction failed: ${error.message}`);
+
+      console.log(`Transaction failed: ${error.message}`);
     }
   }
 
@@ -67,37 +92,26 @@ function App(props) {
         window.web3 = new Web3(window.ethereum);
         try {
           await window.ethereum.enable();
+          window.ethereum.on("accountsChanged", async (newAccounts) => {
+            setAccount(newAccounts[0]);
+            const balances = await window.web3.eth.getBalance(newAccounts[0]);
+            setBalance(window.web3.utils.fromWei(balances, "ether"));
+            getList();
+          });
+
           const accounts = await window.web3.eth.getAccounts();
           setAccount(accounts[0]);
+          const balances = await window.web3.eth.getBalance(accounts[0]);
+          setBalance(window.web3.utils.fromWei(balances, "ether"));
 
           let lotteryABI = ContractABI.abi;
           const contractAddress = "0x434DfE0c80389520826608cF92830703934DD721";
           setContract(
             new window.web3.eth.Contract(lotteryABI, contractAddress)
           );
-          console.log(contract);
-          // 초기 계정 로딩 시 getList 호출
-
-          // 계정 변경 시에도 getList 호출 및 계정 업데이트
-          window.ethereum.on("accountsChanged", (newAccounts) => {
-            setAccount(newAccounts[0]);
-            getList();
-          });
         } catch (error) {
           console.log(`User denied account access error : ${error}`);
         }
-      } else if (typeof window.web3 !== "undefined") {
-        window.web3 = new Web3(window.web3.currentProvider);
-        const accounts = await window.web3.eth.getAccounts();
-        setAccount(accounts[0]);
-
-        let lotteryABI = ContractABI.abi;
-        const contractAddress = "0x434DfE0c80389520826608cF92830703934DD721";
-        const contract = new window.web3.eth.Contract(
-          lotteryABI,
-          contractAddress
-        );
-        console.log(contract);
       } else {
         console.log("Failed MetaMask!");
       }
@@ -183,6 +197,13 @@ function App(props) {
       <div className="mainDiv">
         <h1 className="title">Todo List</h1>
         <div className="myaccount">Your account is: {account}</div>
+        <div
+          className="myBalance"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          Eth. {showFullBalance ? balance : balance.substring(0, 7) + "..."}
+        </div>
         <Button variant="success" onClick={toggleForm} className="btn__lg">
           TodoList 작성하기
         </Button>

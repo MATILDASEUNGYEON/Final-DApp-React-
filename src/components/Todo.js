@@ -40,9 +40,9 @@ function Todo(props) {
     getSender();
   }, []);
 
-  useEffect(() => {
-    console.log(props.startDate);
-  }, []);
+  // useEffect(() => {
+  //   console.log(props.startDate);
+  // }, []);
 
   //시작일,마감일 타입 변경 함수
   function changeDate(unixdate) {
@@ -73,9 +73,9 @@ function Todo(props) {
     setNewStatus(newValue);
     console.log("newV", newValue);
   }
-  useEffect(() => {
-    console.log("New status:", newStatus);
-  }, [newStatus]);
+  // useEffect(() => {
+  //   console.log("New status:", newStatus);
+  // }, [newStatus]);
 
   async function handleSubmit(e) {
     e.preventDefault();

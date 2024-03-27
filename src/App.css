@@ -71,7 +71,11 @@ div {
   display: flex;
   justify-content: center;
 }
-
+.myBalance {
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
 .StatusButton {
   display: flex;
   justify-content: center;

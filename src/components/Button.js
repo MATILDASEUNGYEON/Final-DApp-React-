@@ -11,7 +11,6 @@ function ToggleButtonExample({ value, onChange }) {
 
   const handleStatusChange = (newValue) => {
     onChange(newValue);
-    console.log("cr : ", newValue);
   };
 
   return (
